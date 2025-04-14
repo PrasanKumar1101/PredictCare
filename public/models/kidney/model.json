@@ -1,0 +1,71 @@
+{
+  "format": "layers-model",
+  "generatedBy": "TensorFlow.js v3.18.0",
+  "convertedBy": "TensorFlow.js Converter v3.18.0",
+  "modelTopology": {
+    "keras_version": "2.9.0",
+    "backend": "tensorflow",
+    "model_config": {
+      "class_name": "Sequential",
+      "config": {
+        "name": "sequential",
+        "layers": [
+          {
+            "class_name": "Dense",
+            "config": {
+              "name": "dense",
+              "trainable": true,
+              "dtype": "float32",
+              "units": 1,
+              "activation": "sigmoid",
+              "use_bias": true,
+              "kernel_initializer": {
+                "class_name": "GlorotUniform",
+                "config": { "seed": null }
+              },
+              "bias_initializer": {
+                "class_name": "Zeros",
+                "config": {}
+              }
+            }
+          }
+        ]
+      }
+    },
+    "training_config": {
+      "loss": "binary_crossentropy",
+      "metrics": ["accuracy"],
+      "weighted_metrics": null,
+      "loss_weights": null,
+      "optimizer_config": {
+        "class_name": "Adam",
+        "config": {
+          "name": "Adam",
+          "learning_rate": 0.001,
+          "decay": 0.0,
+          "beta_1": 0.9,
+          "beta_2": 0.999,
+          "epsilon": 1e-7,
+          "amsgrad": false
+        }
+      }
+    }
+  },
+  "weightsManifest": [
+    {
+      "paths": ["group1-shard1of1.bin"],
+      "weights": [
+        {
+          "name": "dense/kernel",
+          "shape": [24, 1],
+          "dtype": "float32"
+        },
+        {
+          "name": "dense/bias",
+          "shape": [1],
+          "dtype": "float32"
+        }
+      ]
+    }
+  ]
+} 
