@@ -6,18 +6,15 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Activity, Heart, Pill, 
-  Calendar, ChevronRight, 
-  FileText, Upload, Shield, 
+  ChevronRight, 
+  Upload, Shield, 
   BarChart3, Bell, Settings 
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import PredictionHistory from '@/components/PredictionHistory';
 
 // Sample user data - in a real app, this would come from an API
 const sampleUserData = {
-  recentPredictions: [
-    { type: 'diabetes', date: '2023-04-15', risk: 'low' },
-    { type: 'heart', date: '2023-04-10', risk: 'moderate' }
-  ],
   healthMetrics: {
     height: 175, // cm
     weight: 70, // kg
@@ -27,7 +24,7 @@ const sampleUserData = {
 };
 
 export default function DashboardPage() {
-  const { isLoaded, userId, sessionId, getToken } = useAuth();
+  const { isLoaded, userId } = useAuth();
   const { user } = useUser();
   const [isClient, setIsClient] = useState(false);
   
@@ -53,7 +50,7 @@ export default function DashboardPage() {
     );
   }
 
-  const getInitials = (name: string | null) => {
+  const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
     return name
       .split(' ')
@@ -143,69 +140,7 @@ export default function DashboardPage() {
               </Link>
             </div>
             
-            {sampleUserData.recentPredictions.length > 0 ? (
-              <div className="space-y-4">
-                {sampleUserData.recentPredictions.map((prediction, index) => (
-                  <motion.div
-                    key={`${prediction.type}-${prediction.date}`}
-                    className={`flex items-center p-4 rounded-lg ${
-                      prediction.type === 'diabetes' 
-                        ? 'bg-blue-50 dark:bg-blue-900/20' 
-                        : prediction.type === 'heart'
-                        ? 'bg-red-50 dark:bg-red-900/20'
-                        : 'bg-purple-50 dark:bg-purple-900/20'
-                    }`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <div className={`p-3 rounded-full ${
-                      prediction.type === 'diabetes' 
-                        ? 'bg-blue-100 dark:bg-blue-800' 
-                        : prediction.type === 'heart'
-                        ? 'bg-red-100 dark:bg-red-800'
-                        : 'bg-purple-100 dark:bg-purple-800'
-                    } mr-4`}>
-                      {prediction.type === 'diabetes' && <Activity className="h-5 w-5 text-blue-700 dark:text-blue-300" />}
-                      {prediction.type === 'heart' && <Heart className="h-5 w-5 text-red-700 dark:text-red-300" />}
-                      {prediction.type === 'kidney' && <Pill className="h-5 w-5 text-purple-700 dark:text-purple-300" />}
-                    </div>
-                    
-                    <div className="flex-1">
-                      <h3 className="text-sm font-medium text-gray-900 dark:text-white capitalize">
-                        {prediction.type} Risk Assessment
-                      </h3>
-                      <div className="flex items-center mt-1">
-                        <Calendar size={14} className="text-gray-500 dark:text-gray-400 mr-1" />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {new Date(prediction.date).toLocaleDateString('en-US', { 
-                            year: 'numeric', 
-                            month: 'short', 
-                            day: 'numeric' 
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      prediction.risk === 'low' 
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
-                        : prediction.risk === 'moderate'
-                        ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'
-                        : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-                    }`}>
-                      {prediction.risk} risk
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
-                <p>No predictions yet.</p>
-                <p className="text-sm mt-1">Start by checking your health risk with one of our tools.</p>
-              </div>
-            )}
+            <PredictionHistory />
           </section>
         </div>
         

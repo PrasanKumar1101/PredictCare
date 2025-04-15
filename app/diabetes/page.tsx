@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { DiabetesInput, DiabetesPrediction } from '../interfaces';
 import { loadModel, predictDiabetes } from '../services/tensorflow';
+import { savePredictionToAPI } from '../services/prediction';
 import { AlertCircle } from 'lucide-react';
 
 export default function DiabetesPage() {
@@ -57,6 +58,11 @@ export default function DiabetesPage() {
       // Use the TensorFlow.js service to make predictions
       const result = await predictDiabetes(formData);
       setPrediction(result);
+      
+      // Save the prediction to the API
+      if (!result.isMockPrediction) {
+        await savePredictionToAPI('diabetes', result, formData as unknown as Record<string, unknown>);
+      }
       
       // Display warning if using mock model
       if (result.isMockPrediction) {
@@ -220,28 +226,28 @@ export default function DiabetesPage() {
 
           {prediction && (
             <div className={`mt-8 p-6 rounded-lg ${
-              prediction.risk === 'High' ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30' :
-              prediction.risk === 'Medium' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30' :
+              prediction.riskLevel === 'high' ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30' :
+              prediction.riskLevel === 'moderate' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30' :
               'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30'
             }`}>
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Prediction Result</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white dark:bg-gray-700 p-4 rounded shadow">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Prediction</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{prediction.prediction === 1 ? 'Positive' : 'Negative'}</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{prediction.predictionScore > 0.5 ? 'Positive' : 'Negative'}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-700 p-4 rounded shadow">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Probability</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{(prediction.probability * 100).toFixed(2)}%</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{(prediction.predictionScore * 100).toFixed(2)}%</p>
                 </div>
                 <div className="bg-white dark:bg-gray-700 p-4 rounded shadow">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Risk Level</p>
                   <p className={`text-xl font-bold ${
-                    prediction.risk === 'High' ? 'text-red-600 dark:text-red-400' :
-                    prediction.risk === 'Medium' ? 'text-yellow-600 dark:text-yellow-400' :
+                    prediction.riskLevel === 'high' ? 'text-red-600 dark:text-red-400' :
+                    prediction.riskLevel === 'moderate' ? 'text-yellow-600 dark:text-yellow-400' :
                     'text-green-600 dark:text-green-400'
                   }`}>
-                    {prediction.risk}
+                    {prediction.riskLevel.charAt(0).toUpperCase() + prediction.riskLevel.slice(1)}
                   </p>
                 </div>
               </div>
@@ -253,7 +259,7 @@ export default function DiabetesPage() {
               )}
               
               <p className="mt-6 text-gray-600 dark:text-gray-300">
-                This is a preliminary assessment. Please consult with a healthcare professional for proper diagnosis and advice.
+                {prediction.recommendation || "This is a preliminary assessment. Please consult with a healthcare professional for proper diagnosis and advice."}
               </p>
             </div>
           )}

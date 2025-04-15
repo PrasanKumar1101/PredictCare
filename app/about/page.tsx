@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { Award, Heart, Brain, Microscope, Clock, Globe } from 'lucide-react';
 
 const fadeIn = {

@@ -4,34 +4,35 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { KidneyInput, KidneyPrediction } from '../interfaces';
 import { loadModel, predictKidney } from '../services/tensorflow';
+import { savePredictionToAPI } from '../services/prediction';
 import { AlertCircle } from 'lucide-react';
 
 export default function KidneyPage() {
   const [formData, setFormData] = useState<Partial<KidneyInput>>({
-    age: 0,
-    bp: 0,
-    sg: 1.0,
-    al: 0,
-    su: 0,
-    rbc: 'normal',
-    pc: 'normal',
-    pcc: 'notpresent',
-    ba: 'notpresent',
-    bgr: 0,
-    bu: 0,
-    sc: 0,
-    sod: 0,
-    pot: 0,
-    hemo: 0,
-    pcv: 0,
-    wc: 0,
-    rc: 0,
-    htn: 'no',
-    dm: 'no',
-    cad: 'no',
-    appet: 'good',
-    pe: 'no',
-    ane: 'no'
+    Age: 0,
+    BloodPressure: 0,
+    SpecificGravity: 1.0,
+    Albumin: 0,
+    Sugar: 0,
+    RedBloodCells: 'normal',
+    PusCells: 'normal',
+    PusCellClumps: 'notpresent',
+    Bacteria: 'notpresent',
+    BloodGlucoseRandom: 0,
+    BloodUrea: 0,
+    SerumCreatinine: 0,
+    Sodium: 0,
+    Potassium: 0,
+    Hemoglobin: 0,
+    PackedCellVolume: 0,
+    WhiteBloodCellCount: 0,
+    RedBloodCellCount: 0,
+    Hypertension: 'no',
+    DiabetesMellitus: 'no',
+    CoronaryArteryDisease: 'no',
+    Appetite: 'good',
+    PedalEdema: 'no',
+    Anemia: 'no'
   });
 
   const [prediction, setPrediction] = useState<KidneyPrediction | null>(null);
@@ -78,6 +79,11 @@ export default function KidneyPage() {
       const result = await predictKidney(formData as KidneyInput);
       setPrediction(result);
       
+      // Save the prediction to the API
+      if (!result.isMockPrediction) {
+        await savePredictionToAPI('kidney', result, formData as unknown as Record<string, unknown>);
+      }
+      
       // Display warning if using mock model
       if (result.isMockPrediction) {
         setError('Using simulated predictions as the model could not be loaded.');
@@ -118,8 +124,8 @@ export default function KidneyPage() {
                 </label>
                 <input
                   type="number"
-                  name="age"
-                  value={formData.age}
+                  name="Age"
+                  value={formData.Age}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -132,8 +138,8 @@ export default function KidneyPage() {
                 </label>
                 <input
                   type="number"
-                  name="bp"
-                  value={formData.bp}
+                  name="BloodPressure"
+                  value={formData.BloodPressure}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -146,8 +152,8 @@ export default function KidneyPage() {
                 </label>
                 <input
                   type="number"
-                  name="sg"
-                  value={formData.sg}
+                  name="SpecificGravity"
+                  value={formData.SpecificGravity}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="1.0"
@@ -161,8 +167,8 @@ export default function KidneyPage() {
                   Albumin
                 </label>
                 <select
-                  name="al"
-                  value={formData.al}
+                  name="Albumin"
+                  value={formData.Albumin}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -180,8 +186,8 @@ export default function KidneyPage() {
                   Sugar
                 </label>
                 <select
-                  name="su"
-                  value={formData.su}
+                  name="Sugar"
+                  value={formData.Sugar}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -199,8 +205,8 @@ export default function KidneyPage() {
                   Red Blood Cells
                 </label>
                 <select
-                  name="rbc"
-                  value={formData.rbc}
+                  name="RedBloodCells"
+                  value={formData.RedBloodCells}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -214,8 +220,8 @@ export default function KidneyPage() {
                   Pus Cell
                 </label>
                 <select
-                  name="pc"
-                  value={formData.pc}
+                  name="PusCells"
+                  value={formData.PusCells}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -229,8 +235,8 @@ export default function KidneyPage() {
                   Pus Cell Clumps
                 </label>
                 <select
-                  name="pcc"
-                  value={formData.pcc}
+                  name="PusCellClumps"
+                  value={formData.PusCellClumps}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -244,8 +250,8 @@ export default function KidneyPage() {
                   Bacteria
                 </label>
                 <select
-                  name="ba"
-                  value={formData.ba}
+                  name="Bacteria"
+                  value={formData.Bacteria}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -259,8 +265,8 @@ export default function KidneyPage() {
                   Hypertension
                 </label>
                 <select
-                  name="htn"
-                  value={formData.htn}
+                  name="Hypertension"
+                  value={formData.Hypertension}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -274,8 +280,8 @@ export default function KidneyPage() {
                   Diabetes Mellitus
                 </label>
                 <select
-                  name="dm"
-                  value={formData.dm}
+                  name="DiabetesMellitus"
+                  value={formData.DiabetesMellitus}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -289,8 +295,8 @@ export default function KidneyPage() {
                   Coronary Artery Disease
                 </label>
                 <select
-                  name="cad"
-                  value={formData.cad}
+                  name="CoronaryArteryDisease"
+                  value={formData.CoronaryArteryDisease}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -304,8 +310,8 @@ export default function KidneyPage() {
                   Appetite
                 </label>
                 <select
-                  name="appet"
-                  value={formData.appet}
+                  name="Appetite"
+                  value={formData.Appetite}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -319,8 +325,8 @@ export default function KidneyPage() {
                   Pedal Edema
                 </label>
                 <select
-                  name="pe"
-                  value={formData.pe}
+                  name="PedalEdema"
+                  value={formData.PedalEdema}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -334,8 +340,8 @@ export default function KidneyPage() {
                   Anemia
                 </label>
                 <select
-                  name="ane"
-                  value={formData.ane}
+                  name="Anemia"
+                  value={formData.Anemia}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -358,30 +364,28 @@ export default function KidneyPage() {
 
           {prediction && (
             <div className={`mt-8 p-6 rounded-lg ${
-              prediction.risk === 'High' ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30' :
-              prediction.risk === 'Medium' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30' :
+              prediction.riskLevel === 'high' ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30' :
+              prediction.riskLevel === 'moderate' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30' :
               'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30'
             }`}>
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Prediction Result</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white dark:bg-gray-700 p-4 rounded shadow">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Prediction</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
-                    {prediction.prediction === 'ckd' ? 'Chronic Kidney Disease' : 'No Chronic Kidney Disease'}
-                  </p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{prediction.predictionScore > 0.5 ? 'Positive' : 'Negative'}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-700 p-4 rounded shadow">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Probability</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{(prediction.probability * 100).toFixed(2)}%</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{(prediction.predictionScore * 100).toFixed(2)}%</p>
                 </div>
                 <div className="bg-white dark:bg-gray-700 p-4 rounded shadow">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Risk Level</p>
                   <p className={`text-xl font-bold ${
-                    prediction.risk === 'High' ? 'text-red-600 dark:text-red-400' :
-                    prediction.risk === 'Medium' ? 'text-yellow-600 dark:text-yellow-400' :
+                    prediction.riskLevel === 'high' ? 'text-red-600 dark:text-red-400' :
+                    prediction.riskLevel === 'moderate' ? 'text-yellow-600 dark:text-yellow-400' :
                     'text-green-600 dark:text-green-400'
                   }`}>
-                    {prediction.risk}
+                    {prediction.riskLevel.charAt(0).toUpperCase() + prediction.riskLevel.slice(1)}
                   </p>
                 </div>
               </div>
@@ -393,7 +397,7 @@ export default function KidneyPage() {
               )}
               
               <p className="mt-6 text-gray-600 dark:text-gray-300">
-                This is a preliminary assessment. Please consult with a healthcare professional for proper diagnosis and advice.
+                {prediction.recommendation || "This is a preliminary assessment. Please consult with a healthcare professional for proper diagnosis and advice."}
               </p>
             </div>
           )}

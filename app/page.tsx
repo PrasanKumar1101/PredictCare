@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { ArrowRight, Check, HeartPulse, Award, Clock, Shield, Zap } from "lucide-react";
+import { ArrowRight, HeartPulse, Shield, Zap } from "lucide-react";
 import Stats from "@/components/ui/Stats";
 import PredictionTools from "@/components/ui/PredictionTools";
 import Testimonials from "@/components/ui/Testimonials";

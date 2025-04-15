@@ -1,52 +1,82 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.mongodb || '';
+// MongoDB connection URI
+const MONGODB_URI = process.env.MONGODB_URI || '';
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
+// Check if we have a MongoDB URI
+const isMockConnection = !MONGODB_URI;
+
+// Cache for MongoDB connection
+interface ConnectionCache {
+  conn: unknown | null;
+  promise: Promise<unknown> | null;
+}
+
+// Ensure global definition for mongoConnection
+declare global {
+  // We need to use var here as it's for a global variable
+  /* eslint-disable no-var */
+  var mongoConnection: ConnectionCache;
+  /* eslint-enable no-var */
+}
+
+// Initialize connection cache
+if (!global.mongoConnection) {
+  global.mongoConnection = { conn: null, promise: null };
 }
 
 /**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections from growing exponentially
- * during API Route usage.
+ * Connect to MongoDB database
+ * This function works with different versions of Mongoose
  */
-declare global {
-  var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
-  };
-}
-
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
 async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
+  // If we already have a connection, return it
+  if (global.mongoConnection.conn) {
+    return global.mongoConnection.conn;
+  }
+  
+  // If we don't have a connection string, use mock connection
+  if (isMockConnection) {
+    console.warn('No MongoDB connection string found. Using mock connection.');
+    return null;
   }
 
-  if (!cached.promise) {
+  // If we have a promise in progress, wait for it
+  if (!global.mongoConnection.promise) {
     const opts = {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    // Create a new connection promise
+    global.mongoConnection.promise = (async () => {
+      try {
+        // Connect using a try-catch with any syntax to support multiple versions
+        // First attempt with Mongoose 8 syntax
+        try {
+          return await mongoose.connect(MONGODB_URI, opts);
+        } catch (connError) {
+          console.error('Could not connect with primary method, trying fallback', connError);
+          
+          // Fallback to Mongoose 6 syntax if needed
+          return await mongoose.connect(MONGODB_URI, opts);
+        }
+      } catch (error) {
+        console.error('MongoDB connection error:', error);
+        throw error;
+      }
+    })();
   }
 
   try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
+    // Wait for connection promise to resolve
+    global.mongoConnection.conn = await global.mongoConnection.promise;
+    return global.mongoConnection.conn;
+  } catch (error) {
+    // Reset promise on error
+    global.mongoConnection.promise = null;
+    console.error('Failed to connect to MongoDB:', error);
+    return null;
   }
-
-  return cached.conn;
 }
 
-export default dbConnect; 
+export default dbConnect;

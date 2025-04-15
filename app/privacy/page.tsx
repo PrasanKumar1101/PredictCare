@@ -3,15 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6 }
-  }
-};
-
 export default function PrivacyPolicyPage() {
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -137,7 +128,7 @@ export default function PrivacyPolicyPage() {
               To exercise these rights, please contact us using the information provided at the end of this policy.
             </p>
             
-            <h2>Children's Privacy</h2>
+            <h2>Children&apos;s Privacy</h2>
             <p>
               Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us so that we can delete such information.
             </p>

@@ -31,31 +31,34 @@ export default function ContactPage() {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  const [submissionStatus, setSubmissionStatus] = useState<{ type: string; message: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitError('');
+    setSubmissionStatus(null);
     
     try {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Reset form and show success
+      // Success scenario
+      setSubmissionStatus({
+        type: 'success',
+        message: 'Your message has been sent successfully. We&apos;ll get back to you as soon as possible.'
+      });
       setFormData({ name: '', email: '', subject: '', message: '' });
-      setSubmitSuccess(true);
-      
-      // Hide success message after 5 seconds
-      setTimeout(() => setSubmitSuccess(false), 5000);
-    } catch (error) {
-      setSubmitError('There was an error submitting your message. Please try again.');
+    } catch {
+      // Failure scenario
+      setSubmissionStatus({
+        type: 'error',
+        message: 'There was an error sending your message. Please try again later.'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -74,7 +77,7 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Have questions or feedback? We'd love to hear from you. Our team is here to help.
+            We&apos;d love to hear from you. Our team is here to help.
           </p>
         </motion.div>
 
@@ -163,17 +166,11 @@ export default function ContactPage() {
                 Send Us a Message
               </h2>
               
-              {submitSuccess && (
-                <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30 rounded-md">
-                  <p className="text-green-700 dark:text-green-400">
-                    Your message has been sent successfully! We'll get back to you soon.
+              {submissionStatus && (
+                <div className={`mb-6 p-4 ${submissionStatus.type === 'success' ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30'} rounded-md`}>
+                  <p className={`text-${submissionStatus.type === 'success' ? 'green' : 'red'}-700 dark:text-${submissionStatus.type === 'success' ? 'green' : 'red'}-400`}>
+                    {submissionStatus.message}
                   </p>
-                </div>
-              )}
-              
-              {submitError && (
-                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-md">
-                  <p className="text-red-700 dark:text-red-400">{submitError}</p>
                 </div>
               )}
               
