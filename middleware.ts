@@ -12,7 +12,13 @@ const isPublicRoute = createRouteMatcher([
   '/diabetes(.*)',
   '/heart(.*)',
   '/kidney(.*)',
-  '/assessment(.*)'
+  '/assessment(.*)',
+  '/blog(.*)',
+  '/faq(.*)',
+  '/about(.*)',
+  '/contact(.*)',
+  '/privacy(.*)',
+  '/upload-prescription(.*)'
 ]);
 
 // Define routes that should be protected
@@ -38,8 +44,8 @@ export default clerkMiddleware(async (auth, req) => {
   // Clerk configuration options
   signInUrl: '/custom-sign-in',
   signUpUrl: '/custom-sign-up',
-  afterSignInUrl: '/dashboard',
-  afterSignUpUrl: '/dashboard',
+  afterSignInUrl: '/',
+  afterSignUpUrl: '/',
 });
 
 export const config = {

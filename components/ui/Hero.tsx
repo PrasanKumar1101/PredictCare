@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="w-full py-16 px-4 md:px-8 bg-[#0a0c16] text-white text-center">
+    <section className="w-full py-16 px-4 md:px-8 bg-white dark:bg-[#0a0c16] text-gray-900 dark:text-white text-center">
       <motion.div
         className="max-w-4xl mx-auto space-y-6"
         initial={{ opacity: 0 }}
@@ -40,7 +40,7 @@ export default function Hero() {
           >
             <Link 
               href="/chat" 
-              className="flex items-center justify-center gap-2 border border-white/40 px-6 py-3 rounded-md font-medium"
+              className="flex items-center justify-center gap-2 border border-gray-300 dark:border-white/40 text-gray-900 dark:text-white px-6 py-3 rounded-md font-medium"
             >
               Chat with AI
             </Link>

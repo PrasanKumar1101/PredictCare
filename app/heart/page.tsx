@@ -8,19 +8,17 @@ import { AlertCircle } from 'lucide-react';
 
 export default function HeartPage() {
   const [formData, setFormData] = useState<HeartInput>({
-    age: 0,
-    sex: 0,
-    cp: 0,
-    trestbps: 0,
-    chol: 0,
-    fbs: 0,
-    restecg: 0,
-    thalach: 0,
-    exang: 0,
-    oldpeak: 0,
-    slope: 0,
-    ca: 0,
-    thal: 0
+    Age: 0,
+    Sex: 'male',
+    ChestPainType: 0,
+    RestingBP: 0,
+    Cholesterol: 0,
+    FastingBS: false,
+    RestingECG: 0,
+    MaxHR: 0,
+    ExerciseAngina: false,
+    Oldpeak: 0,
+    ST_Slope: 0
   });
 
   const [prediction, setPrediction] = useState<HeartPrediction | null>(null);
@@ -46,11 +44,25 @@ export default function HeartPage() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: parseFloat(value) || 0
-    });
+    const { name, value, type } = e.target;
+    
+    if (name === 'Sex') {
+      setFormData({
+        ...formData,
+        Sex: value as 'male' | 'female'
+      });
+    } else if (type === 'checkbox') {
+      const checkbox = e.target as HTMLInputElement;
+      setFormData({
+        ...formData,
+        [name]: checkbox.checked
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'number' ? parseFloat(value) || 0 : value
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,8 +115,8 @@ export default function HeartPage() {
                 </label>
                 <input
                   type="number"
-                  name="age"
-                  value={formData.age}
+                  name="Age"
+                  value={formData.Age}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -116,13 +128,13 @@ export default function HeartPage() {
                   Sex
                 </label>
                 <select
-                  name="sex"
-                  value={formData.sex}
+                  name="Sex"
+                  value={formData.Sex}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="0">Female</option>
-                  <option value="1">Male</option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
                 </select>
               </div>
 
@@ -131,8 +143,8 @@ export default function HeartPage() {
                   Chest Pain Type
                 </label>
                 <select
-                  name="cp"
-                  value={formData.cp}
+                  name="ChestPainType"
+                  value={formData.ChestPainType}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -149,8 +161,8 @@ export default function HeartPage() {
                 </label>
                 <input
                   type="number"
-                  name="trestbps"
-                  value={formData.trestbps}
+                  name="RestingBP"
+                  value={formData.RestingBP}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -159,12 +171,12 @@ export default function HeartPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Serum Cholesterol (mg/dl)
+                  Cholesterol (mg/dl)
                 </label>
                 <input
                   type="number"
-                  name="chol"
-                  value={formData.chol}
+                  name="Cholesterol"
+                  value={formData.Cholesterol}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -173,17 +185,20 @@ export default function HeartPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Fasting Blood Sugar {'>'}120 mg/dl
+                  Fasting Blood Sugar {'>'} 120 mg/dl
                 </label>
-                <select
-                  name="fbs"
-                  value={formData.fbs}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="0">No</option>
-                  <option value="1">Yes</option>
-                </select>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      name="FastingBS"
+                      checked={formData.FastingBS}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Yes</span>
+                  </label>
+                </div>
               </div>
               
               <div>
@@ -191,8 +206,8 @@ export default function HeartPage() {
                   Resting ECG Results
                 </label>
                 <select
-                  name="restecg"
-                  value={formData.restecg}
+                  name="RestingECG"
+                  value={formData.RestingECG}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
@@ -208,8 +223,8 @@ export default function HeartPage() {
                 </label>
                 <input
                   type="number"
-                  name="thalach"
-                  value={formData.thalach}
+                  name="MaxHR"
+                  value={formData.MaxHR}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -220,15 +235,18 @@ export default function HeartPage() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Exercise Induced Angina
                 </label>
-                <select
-                  name="exang"
-                  value={formData.exang}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="0">No</option>
-                  <option value="1">Yes</option>
-                </select>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      name="ExerciseAngina"
+                      checked={formData.ExerciseAngina}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Yes</span>
+                  </label>
+                </div>
               </div>
               
               <div>
@@ -237,8 +255,8 @@ export default function HeartPage() {
                 </label>
                 <input
                   type="number"
-                  name="oldpeak"
-                  value={formData.oldpeak}
+                  name="Oldpeak"
+                  value={formData.Oldpeak}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   min="0"
@@ -251,47 +269,14 @@ export default function HeartPage() {
                   Slope of Peak Exercise ST Segment
                 </label>
                 <select
-                  name="slope"
-                  value={formData.slope}
+                  name="ST_Slope"
+                  value={formData.ST_Slope}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="0">Upsloping</option>
                   <option value="1">Flat</option>
                   <option value="2">Downsloping</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Number of Major Vessels
-                </label>
-                <select
-                  name="ca"
-                  value={formData.ca}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Thalassemia
-                </label>
-                <select
-                  name="thal"
-                  value={formData.thal}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="0">Normal</option>
-                  <option value="1">Fixed Defect</option>
-                  <option value="2">Reversible Defect</option>
                 </select>
               </div>
             </div>

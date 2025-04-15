@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Menu, Moon, Sun, UserPlus, LogIn } from "lucide-react";
+import { Menu, UserPlus, LogIn } from "lucide-react";
 import { useState } from "react";
-import { useTheme } from '@/components/ThemeProvider';
+import { ThemeToggle } from "../theme/theme-toggle";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <motion.header 
@@ -26,13 +25,7 @@ export default function Navbar() {
       </div>
       
       <div className="flex items-center gap-4">
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-full hover:bg-gray-200/20 transition-colors"
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+        <ThemeToggle />
         
         <Link 
           href="/custom-sign-in"
