@@ -1,0 +1,2 @@
+This directory will contain static files for the web interface such as CSS, JavaScript, and images.
+You can add your static files here. 

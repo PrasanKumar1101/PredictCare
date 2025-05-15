@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth, useUser } from '@clerk/nextjs';
+import { useAuth, useUser, UserButton } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { 
@@ -10,7 +10,6 @@ import {
   Upload, Shield, 
   BarChart3, Bell, Settings 
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import PredictionHistory from '@/components/PredictionHistory';
 
 // Sample user data - in a real app, this would come from an API
@@ -50,16 +49,6 @@ export default function DashboardPage() {
     );
   }
 
-  const getInitials = (name: string | null | undefined) => {
-    if (!name) return 'U';
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
       {/* Dashboard Header */}
@@ -67,14 +56,13 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <motion.div 
-                className="h-14 w-14 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-xl"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                {getInitials(user?.fullName || user?.firstName)}
-              </motion.div>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "h-14 w-14"
+                  }
+                }}
+              />
               <div className="ml-4">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   Welcome back, {user?.firstName || 'User'}

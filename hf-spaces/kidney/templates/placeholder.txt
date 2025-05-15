@@ -1,0 +1,2 @@
+This directory will contain the template files for the web interface.
+You can create index.html and other template files here. 

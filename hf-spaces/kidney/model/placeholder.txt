@@ -1,0 +1,19 @@
+This directory will contain the kidney disease prediction model (kidney_model.pkl).
+Place your trained scikit-learn model here.
+
+Example code to load and use the model:
+```python
+import pickle
+import numpy as np
+
+# Load model
+with open("model/kidney_model.pkl", "rb") as f:
+    model = pickle.load(f)
+
+# Example prediction with preprocessed data
+# This is a simplified example; actual data needs preprocessing as shown in app.py
+sample_data = np.array([[
+    48, 80, 1.020, 1, 0, 1, 2, 0, 0, 121, 36, 1.2, 
+    137.5, 4.5, 15.4, 44, 7800, 5.2, 1, 0, 0, 1, 0, 0
+]])
+result = model.predict_proba(sample_data)[0] 

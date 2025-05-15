@@ -1,0 +1,16 @@
+This directory will contain the diabetes prediction model (diabetes_model.pkl).
+Place your trained scikit-learn model here.
+
+Example code to load and use the model:
+```python
+import pickle
+import numpy as np
+
+# Load model
+with open("model/diabetes_model.pkl", "rb") as f:
+    model = pickle.load(f)
+
+# Example prediction
+sample_data = np.array([[6, 148, 72, 35, 0, 33.6, 0.627, 50]])
+result = model.predict_proba(sample_data)[0]
+``` 

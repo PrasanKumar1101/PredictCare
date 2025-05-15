@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { SignInButton, SignOutButton, useAuth } from '@clerk/nextjs';
+import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from './theme/theme-toggle';
 
@@ -167,11 +167,15 @@ export default function Navbar() {
           <div className="hidden sm:flex items-center space-x-4">
             <ThemeToggle />
             {isSignedIn ? (
-              <SignOutButton>
-                <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                  Sign out
-                </button>
-              </SignOutButton>
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "h-9 w-9",
+                    userButtonOuterIdentifier: "text-sm text-gray-700 dark:text-gray-300"
+                  }
+                }}
+              />
             ) : (
               <SignInButton>
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
@@ -264,23 +268,34 @@ export default function Navbar() {
               ))}
             </div>
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between px-4">
-                <ThemeToggle />
-                <div>
-                  {isSignedIn ? (
-                    <SignOutButton>
-                      <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                        Sign out
-                      </button>
-                    </SignOutButton>
-                  ) : (
+              <div className="flex items-center px-4">
+                {isSignedIn ? (
+                  <div className="flex items-center space-x-3">
+                    <UserButton 
+                      afterSignOutUrl="/"
+                      appearance={{
+                        elements: {
+                          userButtonAvatarBox: "h-8 w-8", 
+                          userButtonOuterIdentifier: "text-sm text-gray-700 dark:text-gray-300"
+                        }
+                      }}
+                    />
+                    <div className="ml-3">
+                      <ThemeToggle />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-3">
                     <SignInButton>
                       <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                         Sign in
                       </button>
                     </SignInButton>
-                  )}
-                </div>
+                    <div className="ml-3">
+                      <ThemeToggle />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
