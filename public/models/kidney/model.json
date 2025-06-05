@@ -15,13 +15,16 @@
             "config": {
               "name": "dense",
               "trainable": true,
+              "batch_input_shape": [null, 24],
               "dtype": "float32",
               "units": 1,
               "activation": "sigmoid",
               "use_bias": true,
               "kernel_initializer": {
                 "class_name": "GlorotUniform",
-                "config": { "seed": null }
+                "config": {
+                  "seed": null
+                }
               },
               "bias_initializer": {
                 "class_name": "Zeros",
@@ -34,7 +37,9 @@
     },
     "training_config": {
       "loss": "binary_crossentropy",
-      "metrics": ["accuracy"],
+      "metrics": [
+        "accuracy"
+      ],
       "weighted_metrics": null,
       "loss_weights": null,
       "optimizer_config": {
@@ -42,7 +47,7 @@
         "config": {
           "name": "Adam",
           "learning_rate": 0.001,
-          "decay": 0.0,
+          "decay": 0,
           "beta_1": 0.9,
           "beta_2": 0.999,
           "epsilon": 1e-7,
@@ -53,19 +58,26 @@
   },
   "weightsManifest": [
     {
-      "paths": ["group1-shard1of1.bin"],
+      "paths": [
+        "group1-shard1of1.bin"
+      ],
       "weights": [
         {
           "name": "dense/kernel",
-          "shape": [24, 1],
+          "shape": [
+            24,
+            1
+          ],
           "dtype": "float32"
         },
         {
           "name": "dense/bias",
-          "shape": [1],
+          "shape": [
+            1
+          ],
           "dtype": "float32"
         }
       ]
     }
   ]
-} 
+}

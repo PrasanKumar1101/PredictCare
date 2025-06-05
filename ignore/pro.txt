@@ -1,0 +1,13 @@
+ great, i have deployed all three
+@https://huggingface.co/spaces/prasan1101/ml-heart 
+@https://huggingface.co/spaces/prasan1101/kidney 
+@https://huggingface.co/spaces/prasan1101/diabetes 
+now let's make changes to our next app by linking and making relevant api calls for each model using fasst API , also link our three forms to work with the api 
+Add a background to the hero section it could either some animated svg or a simple gradient would do, 
+
+also in the navbar can you make it so that if the user is logged in display the UserButton from clerk, 
+
+also improve our CTA on the landing page
+make use of the userButton at the Dashboard too,
+ add fallback mechanisms that calculate and give a result in case our api fails
+ add relevant console logs to ensure proper error tracking

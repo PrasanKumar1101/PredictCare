@@ -34,7 +34,7 @@ export default function DiabetesPage() {
       } catch (err) {
         console.error('Error initializing TensorFlow model:', err);
         setModelStatus('error');
-        setError('The system is currently operating in compatibility mode. Predictions will still be available.');
+        setError(null);
       }
     }
 
@@ -76,7 +76,6 @@ export default function DiabetesPage() {
       // Try to save the prediction to the API
       try {
         await savePredictionToAPI('diabetes', result, formData as unknown as Record<string, unknown>);
-        console.log('Successfully saved prediction to API');
       } catch (saveError) {
         console.error('Failed to save prediction to API:', saveError);
         // Don't throw - this is a non-critical operation
@@ -96,7 +95,7 @@ export default function DiabetesPage() {
         
         setPrediction(mockResult);
         setError('Our prediction service is currently experiencing high demand. The results provided are for demonstration purposes only.');
-      } catch (_fallbackError) {
+      } catch {
         setError('A connection error occurred. Please try again later.');
       }
     } finally {
@@ -253,7 +252,7 @@ export default function DiabetesPage() {
           </form>
 
           {prediction && (
-            <div className={`mt-8 p-6 rounded-lg ${
+            <div className={`mt-8 p-6 rounded-lg ${ 
               prediction.riskLevel === 'high' ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30' :
               prediction.riskLevel === 'moderate' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30' :
               'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30'

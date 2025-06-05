@@ -8,10 +8,10 @@ import { savePredictionToAPI } from '../services/prediction';
 import { AlertCircle } from 'lucide-react';
 
 export default function KidneyPage() {
-  const [formData, setFormData] = useState<Partial<KidneyInput>>({
+  const [formData, setFormData] = useState({
     Age: 0,
     BloodPressure: 0,
-    SpecificGravity: 1.0,
+    SpecificGravity: 1.02,
     Albumin: 0,
     Sugar: 0,
     RedBloodCells: 'normal',
@@ -50,7 +50,7 @@ export default function KidneyPage() {
       } catch (err) {
         console.error('Error initializing TensorFlow model:', err);
         setModelStatus('error');
-        setError('The system is currently operating in compatibility mode. Predictions will still be available.');
+        setError(null);
       }
     }
 
@@ -97,7 +97,6 @@ export default function KidneyPage() {
       // Try to save the prediction to the API
       try {
         await savePredictionToAPI('kidney', result, formData as unknown as Record<string, unknown>);
-        console.log('Successfully saved kidney prediction to API');
       } catch (saveError) {
         console.error('Failed to save kidney prediction to API:', saveError);
         // Don't throw - this is a non-critical operation
@@ -251,7 +250,7 @@ export default function KidneyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Pus Cell
+                  Pus Cells
                 </label>
                 <select
                   name="PusCells"
@@ -274,8 +273,8 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="present">Present</option>
                   <option value="notpresent">Not Present</option>
+                  <option value="present">Present</option>
                 </select>
               </div>
 
@@ -289,9 +288,139 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="present">Present</option>
                   <option value="notpresent">Not Present</option>
+                  <option value="present">Present</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Blood Glucose Random (mg/dL)
+                </label>
+                <input
+                  type="number"
+                  name="BloodGlucoseRandom"
+                  value={formData.BloodGlucoseRandom}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Blood Urea (mg/dL)
+                </label>
+                <input
+                  type="number"
+                  name="BloodUrea"
+                  value={formData.BloodUrea}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Serum Creatinine (mg/dL)
+                </label>
+                <input
+                  type="number"
+                  name="SerumCreatinine"
+                  value={formData.SerumCreatinine}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Sodium (mEq/L)
+                </label>
+                <input
+                  type="number"
+                  name="Sodium"
+                  value={formData.Sodium}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Potassium (mEq/L)
+                </label>
+                <input
+                  type="number"
+                  name="Potassium"
+                  value={formData.Potassium}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Hemoglobin (g/dL)
+                </label>
+                <input
+                  type="number"
+                  name="Hemoglobin"
+                  value={formData.Hemoglobin}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Packed Cell Volume (%)
+                </label>
+                <input
+                  type="number"
+                  name="PackedCellVolume"
+                  value={formData.PackedCellVolume}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  White Blood Cell Count (cells/mcL)
+                </label>
+                <input
+                  type="number"
+                  name="WhiteBloodCellCount"
+                  value={formData.WhiteBloodCellCount}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Red Blood Cell Count (million cells/mcL)
+                </label>
+                <input
+                  type="number"
+                  name="RedBloodCellCount"
+                  value={formData.RedBloodCellCount}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                  step="0.1"
+                />
               </div>
 
               <div>
@@ -304,8 +433,8 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="yes">Yes</option>
                   <option value="no">No</option>
+                  <option value="yes">Yes</option>
                 </select>
               </div>
 
@@ -319,8 +448,8 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="yes">Yes</option>
                   <option value="no">No</option>
+                  <option value="yes">Yes</option>
                 </select>
               </div>
 
@@ -334,8 +463,8 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="yes">Yes</option>
                   <option value="no">No</option>
+                  <option value="yes">Yes</option>
                 </select>
               </div>
 
@@ -364,8 +493,8 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="yes">Yes</option>
                   <option value="no">No</option>
+                  <option value="yes">Yes</option>
                 </select>
               </div>
 
@@ -379,8 +508,8 @@ export default function KidneyPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="yes">Yes</option>
                   <option value="no">No</option>
+                  <option value="yes">Yes</option>
                 </select>
               </div>
             </div>
@@ -423,12 +552,6 @@ export default function KidneyPage() {
                   </p>
                 </div>
               </div>
-              
-              {prediction.isMockPrediction && (
-                <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded text-amber-700 dark:text-amber-400 text-sm">
-                  <strong>Note:</strong> This is a simulated prediction as the model could not be loaded.
-                </div>
-              )}
               
               <p className="mt-6 text-gray-600 dark:text-gray-300">
                 {prediction.recommendation || "This is a preliminary assessment. Please consult with a healthcare professional for proper diagnosis and advice."}

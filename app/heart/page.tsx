@@ -2,34 +2,33 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { HeartInput, HeartPrediction } from '../interfaces';
+import { HeartInput, HeartPredictionResult as HeartPrediction } from '../interfaces';
 import { loadModel, predictHeart } from '../services/tensorflow';
 import { savePredictionToAPI } from '../services/prediction';
 import { AlertCircle } from 'lucide-react';
 
-// Default form values
-const DEFAULT_FORM_VALUES: HeartInput = {
-  Age: 50,
-  Sex: 'male',
-  ChestPainType: 0,
-  RestingBP: 120,
-  Cholesterol: 200,
-  FastingBS: false,
-  RestingECG: 0,
-  MaxHR: 120,
-  ExerciseAngina: false,
-  Oldpeak: 0,
-  ST_Slope: 0
-};
-
 export default function HeartPage() {
-  const [loading, setLoading] = useState(false);
-  const [prediction, setPrediction] = useState<HeartPrediction | null>(null);
-  const [formValues, setFormValues] = useState<HeartInput>(DEFAULT_FORM_VALUES);
-  const [modelStatus, setModelStatus] = useState<'loading' | 'loaded' | 'failed'>('loading');
-  const [error, setError] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<HeartInput>({
+    Age: 0,
+    Sex: 'female',
+    ChestPainType: 0,
+    RestingBP: 0,
+    Cholesterol: 0,
+    FastingBS: false,
+    RestingECG: 0,
+    MaxHR: 0,
+    ExerciseAngina: false,
+    Oldpeak: 0,
+    ST_Slope: 0,
+    Ca: 0,
+    Thal: 0
+  });
 
-  // Initialize TensorFlow.js when component mounts
+  const [prediction, setPrediction] = useState<HeartPrediction | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [modelStatus, setModelStatus] = useState<'loading' | 'loaded' | 'failed'>('loading');
+
   useEffect(() => {
     let isSubscribed = true;
     
@@ -40,10 +39,9 @@ export default function HeartPage() {
           setModelStatus('loaded');
         }
       } catch (err) {
-        console.error('Failed to load model:', err);
-        if (isSubscribed) {
-          setModelStatus('failed');
-        }
+        console.error('Error initializing TensorFlow model:', err);
+        setModelStatus('error');
+        setError(null);
       }
     };
 
@@ -105,7 +103,6 @@ export default function HeartPage() {
       // Try to save the prediction to the API
       try {
         await savePredictionToAPI('heart', result, formValues as unknown as Record<string, unknown>);
-        console.log('Successfully saved heart prediction to API');
       } catch (saveError) {
         console.error('Failed to save heart prediction to API:', saveError);
         // Don't throw - this is a non-critical operation
@@ -125,7 +122,7 @@ export default function HeartPage() {
         
         setPrediction(mockResult);
         setError('Our prediction service is currently experiencing high demand. The results provided are for demonstration purposes only.');
-      } catch (_) {
+      } catch {
         setError('A connection error occurred. Please try again later.');
       }
     } finally {
@@ -214,10 +211,10 @@ export default function HeartPage() {
                   min="0"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Cholesterol (mg/dl)
+                  Cholesterol (mg/dL)
                 </label>
                 <input
                   type="number"
@@ -228,28 +225,23 @@ export default function HeartPage() {
                   min="0"
                 />
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Fasting Blood Sugar {'>'} 120 mg/dl
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="FastingBS"
+                  checked={formValues.FastingBS}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  Fasting Blood Sugar > 120 mg/dL
                 </label>
-                <div className="mt-2">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      name="FastingBS"
-                      checked={formValues.FastingBS}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Yes</span>
-                  </label>
-                </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Resting ECG Results
+                  Resting ECG
                 </label>
                 <select
                   name="RestingECG"
@@ -262,10 +254,10 @@ export default function HeartPage() {
                   <option value="2">Left Ventricular Hypertrophy</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Maximum Heart Rate
+                  Maximum Heart Rate (bpm)
                 </label>
                 <input
                   type="number"
@@ -276,28 +268,23 @@ export default function HeartPage() {
                   min="0"
                 />
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="ExerciseAngina"
+                  checked={formValues.ExerciseAngina}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                   Exercise Induced Angina
                 </label>
-                <div className="mt-2">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      name="ExerciseAngina"
-                      checked={formValues.ExerciseAngina}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Yes</span>
-                  </label>
-                </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  ST Depression Induced by Exercise
+                  Oldpeak (ST Depression)
                 </label>
                 <input
                   type="number"
@@ -309,10 +296,10 @@ export default function HeartPage() {
                   step="0.1"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Slope of Peak Exercise ST Segment
+                  ST Slope
                 </label>
                 <select
                   name="ST_Slope"
@@ -323,6 +310,37 @@ export default function HeartPage() {
                   <option value="0">Upsloping</option>
                   <option value="1">Flat</option>
                   <option value="2">Downsloping</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Number of Major Vessels (0-4)
+                </label>
+                <input
+                  type="number"
+                  name="Ca"
+                  value={formValues.Ca}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  min="0"
+                  max="4"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Thalassemia
+                </label>
+                <select
+                  name="Thal"
+                  value={formValues.Thal}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                >
+                  <option value="0">Normal</option>
+                  <option value="1">Fixed Defect</option>
+                  <option value="2">Reversible Defect</option>
                 </select>
               </div>
             </div>
