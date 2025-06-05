@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { HeartInput, HeartPredictionResult as HeartPrediction } from '../interfaces';
+import { HeartInput, HeartPrediction } from '../interfaces';
 import { loadModel, predictHeart } from '../services/tensorflow';
 import { savePredictionToAPI } from '../services/prediction';
 import { AlertCircle } from 'lucide-react';
@@ -32,7 +32,7 @@ export default function HeartPage() {
   useEffect(() => {
     let isSubscribed = true;
     
-    const loadModel = async () => {
+    const initializeModel = async () => {
       try {
         await loadModel('heart');
         if (isSubscribed) {
@@ -40,12 +40,12 @@ export default function HeartPage() {
         }
       } catch (err) {
         console.error('Error initializing TensorFlow model:', err);
-        setModelStatus('error');
+        setModelStatus('failed');
         setError(null);
       }
     };
 
-    loadModel();
+    initializeModel();
     
     return () => {
       isSubscribed = false;
@@ -86,8 +86,7 @@ export default function HeartPage() {
       // First attempt: Try using the TensorFlow service which now tries Hugging Face API first
       let result;
       try {
-        const [prediction, _modelLoaded] = await predictHeart(formValues);
-        result = prediction;
+        result = await predictHeart(formValues);
         if (result.isMockPrediction) {
           console.warn('Using mock prediction for heart disease assessment');
         }
@@ -235,7 +234,7 @@ export default function HeartPage() {
                   className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                 />
                 <label className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Fasting Blood Sugar > 120 mg/dL
+                  Fasting Blood Sugar &gt; 120 mg/dL
                 </label>
               </div>
 
