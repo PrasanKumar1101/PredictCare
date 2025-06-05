@@ -20,9 +20,9 @@ const mockModelFlags: Record<string, boolean> = {
 
 // Flag to track if we're using Hugging Face API
 const hfAPIFlags: Record<string, boolean> = {
-  diabetes: true, // Default to try API first
-  heart: true,    // Default to try API first
-  kidney: true    // Default to try API first
+  diabetes: false, // Disable API to use local models
+  heart: false,    // Disable API to use local models  
+  kidney: false    // Disable API to use local models
 };
 
 /**
