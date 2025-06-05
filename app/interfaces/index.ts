@@ -44,6 +44,8 @@ export interface HeartInput {
   ExerciseAngina: boolean;
   Oldpeak: number;
   ST_Slope: number;
+  Ca: number; // Number of major vessels (0-4)
+  Thal: number; // Thalassemia (0-2)
 }
 
 export interface HeartPrediction {

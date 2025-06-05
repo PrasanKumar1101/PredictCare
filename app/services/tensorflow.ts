@@ -271,7 +271,9 @@ export async function predictHeart(input: HeartInput): Promise<HeartPrediction> 
         input.MaxHR / 220,
         input.ExerciseAngina ? 1 : 0,
         input.Oldpeak / 6.2,
-        input.ST_Slope / 3 // Assume 3 types
+        input.ST_Slope / 3, // Assume 3 types
+        input.Ca / 4, // Number of major vessels (0-4)
+        input.Thal / 2 // Thalassemia (0-2)
       ]
     ]);
     
