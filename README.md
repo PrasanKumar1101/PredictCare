@@ -37,17 +37,6 @@ It also features an interactive **Brain Health Chatbot** powered by **Google's G
 
 ---
 
-## 🛠 Getting Started
 
-### ✅ Prerequisites
 
-- Node.js v18+
-- npm or yarn
-- Python (for model conversion only)
 
-### 📦 Installation
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/yourusername/healthpredict.git
-   cd healthpredict
